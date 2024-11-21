@@ -122,10 +122,11 @@ loader.load("base1.glb", (gltf) => {
 
         head.add(spotLight);
 
-        // Load the table model
+        // table
         loader.load("table.glb", (gltf) => {
           table = gltf.scene;
           table.position.set(0, -0.95, 0);
+          table.scale.set(1.5, 1.5, 1.5);
           table.traverse((child) => {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial({
@@ -138,6 +139,21 @@ loader.load("base1.glb", (gltf) => {
             }
           });
           scene.add(table);
+
+          // tiles
+          loader.load("tiles.glb", (gltf) => {
+            const tiles = gltf.scene;
+            tiles.position.set(0, -6.55, 0);
+            // resize tiles 5x bigger
+            tiles.scale.set(5, 5, 5);
+            tiles.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+            scene.add(tiles);
+          });
         });
       });
     });
@@ -190,17 +206,17 @@ document.getElementById("headRotation").addEventListener("input", (e) => {
 });
 
 
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({
-  color: 0x333333,
-  // transparent: true,
-  // opacity: 0,
-  side: THREE.DoubleSide
-}));
-floor.rotation.x = -Math.PI / 2;
-// floor.position.y = -1;
-floor.position.y = -6.55;
-floor.receiveShadow = true;
-scene.add(floor);
+// const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({
+//   color: 0x333333,
+//   // transparent: true,
+//   // opacity: 0,
+//   side: THREE.DoubleSide
+// }));
+// floor.rotation.x = -Math.PI / 2;
+// // floor.position.y = -1;
+// floor.position.y = -6.55;
+// floor.receiveShadow = true;
+// scene.add(floor);
 
 function animate() {
   requestAnimationFrame(animate);
