@@ -35,11 +35,78 @@ setupLighting();
 
 const loader = new GLTFLoader().setPath("./assets/");
 
-let base, lowerArm, upperArm, head, table;
+let table, notebook;
+let base, lowerArm, upperArm, head;
+
+// table
+// First, add the texture loader
+const textureLoader = new THREE.TextureLoader();
+
+// table
+loader.load("table.glb", (gltf) => {
+  table = gltf.scene;
+  table.position.set(0, -0.95, 0);
+  table.scale.set(1.5, 1.5, 1.5);
+
+  const texture = textureLoader.load('./assets/texture.png');
+  table.traverse((child) => {
+    if (child.isMesh) {
+      // Apply the texture to the table only
+      if (child.name.includes("Table")) {
+        child.material = new THREE.MeshStandardMaterial({
+          map: texture, // Apply texture here
+          metalness: 0.3,
+          roughness: 0.5,
+        });
+      } else {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x000000,
+          metalness: 0.3,
+          roughness: 0.5,
+        });
+      }
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+
+  scene.add(table);
+});
+
+
+// notebook
+loader.load("notebook.glb", (gltf) => {
+  notebook = gltf.scene;
+  notebook.rotation.y = Math.PI / 2;
+  notebook.position.set(-4, -0.5, -1.5);
+  notebook.scale.set(0.02, 0.02, 0.02);
+  notebook.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+  table.add(notebook);
+});
+
+// tiles
+// loader.load("tiles.glb", (gltf) => {
+//   const tiles = gltf.scene;
+//   // tiles.position.set(0, -6.55, 0);
+//   tiles.position.set(0, -9.35, 0);
+//   tiles.scale.set(10, 10, 10);
+//   tiles.traverse((child) => {
+//     if (child.isMesh) {
+//       child.castShadow = true;
+//       child.receiveShadow = true;
+//     }
+//   });
+//   scene.add(tiles);
+// });
 
 loader.load("base1.glb", (gltf) => {
   base = gltf.scene;
-  base.position.set(0, -1, 0);
+  base.position.set(0, 0, 0);
   base.traverse((child) => {
     if (child.isMesh) {
       child.material = new THREE.MeshStandardMaterial({
@@ -51,9 +118,7 @@ loader.load("base1.glb", (gltf) => {
       child.receiveShadow = true;
     }
   });
-  const basePivot = new THREE.Object3D();
-  basePivot.add(base);
-  scene.add(basePivot);
+  table.add(base);
 
   loader.load("stemBawah.glb", (gltf) => {
     lowerArm = gltf.scene;
@@ -121,46 +186,6 @@ loader.load("base1.glb", (gltf) => {
         spotLight.target = spotLightTarget;
 
         head.add(spotLight);
-
-        loader.load("table.glb", (gltf) => {
-          table = gltf.scene;
-          table.position.set(0, -0.95, 0);
-          table.scale.set(1.5, 1.5, 1.5);
-          
-          const textureLoader = new THREE.TextureLoader();
-          textureLoader.load(
-            "./assets/texture.png", 
-            (texture) => {
-              table.traverse((child) => {
-                if (child.isMesh) {
-                  child.material = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    metalness: 0.3,
-                    roughness: 0.5,
-                  });
-                  child.castShadow = true;
-                  child.receiveShadow = true;
-                }
-              });
-            }
-          );
-          scene.add(table);
-
-          // tiles
-          loader.load("tiles.glb", (gltf) => {
-            const tiles = gltf.scene;
-            // tiles.position.set(0, -6.55, 0);
-            tiles.position.set(0, -9.35, 0);
-            tiles.scale.set(10, 10, 10);
-            tiles.traverse((child) => {
-              if (child.isMesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-              }
-            });
-            scene.add(tiles);
-          });
-        });
       });
     });
   });
@@ -211,6 +236,26 @@ document.getElementById("headRotation").addEventListener("input", (e) => {
   updateModelRotation();
 });
 
+document.getElementById("tableSlide").addEventListener("input", (e) => {
+  table.position.x = parseFloat(e.target.value);
+});
+
+document.getElementById("baseSlideX").addEventListener("input", (e) => {
+  base.position.x = parseFloat(e.target.value);
+});
+document.getElementById("baseSlideZ").addEventListener("input", (e) => {
+  base.position.z = parseFloat(e.target.value);
+});
+
+document.getElementById("notebookSlideX").addEventListener("input", (e) => {
+  notebook.position.x = parseFloat(e.target.value);
+});
+document.getElementById("notebookSlideZ").addEventListener("input", (e) => {
+  notebook.position.z = parseFloat(e.target.value);
+});
+document.getElementById("notebookRotate").addEventListener("input", (e) => {
+  notebook.rotation.y = THREE.MathUtils.degToRad(parseFloat(e.target.value));
+});
 
 // const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({
 //   color: 0x333333,
