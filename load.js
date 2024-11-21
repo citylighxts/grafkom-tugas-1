@@ -34,7 +34,7 @@ setupLighting();
 
 const loader = new GLTFLoader().setPath("./model/");
 
-let base, lowerArm, upperArm, head;
+let base, lowerArm, upperArm, head, table;
 
 loader.load("base1.glb", (gltf) => {
   base = gltf.scene;
@@ -105,6 +105,24 @@ loader.load("base1.glb", (gltf) => {
         spotLight.target = spotLightTarget;
 
         head.add(spotLight);
+
+        // Load the table model
+        loader.load("table.glb", (gltf) => {
+          table = gltf.scene;
+          table.position.set(0, -0.95, 0);
+          table.traverse((child) => {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({
+                color: 0x8b4513,
+                metalness: 0.3,
+                roughness: 0.5,
+              });
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+          scene.add(table);
+        });
       });
     });
   });
@@ -156,7 +174,12 @@ document.getElementById("headRotation").addEventListener("input", (e) => {
 });
 
 
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({ color: 0x333333, side: THREE.DoubleSide }));
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({
+  // color: 0x333333,
+  transparent: true,
+  opacity: 0,
+  side: THREE.DoubleSide
+}));
 floor.rotation.x = -Math.PI / 2;
 floor.position.y = -1;
 floor.receiveShadow = true;
