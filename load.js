@@ -143,9 +143,9 @@ loader.load("base1.glb", (gltf) => {
           // tiles
           loader.load("tiles.glb", (gltf) => {
             const tiles = gltf.scene;
-            tiles.position.set(0, -6.55, 0);
-            // resize tiles 5x bigger
-            tiles.scale.set(5, 5, 5);
+            // tiles.position.set(0, -6.55, 0);
+            tiles.position.set(0, -9.35, 0);
+            tiles.scale.set(10, 10, 10);
             tiles.traverse((child) => {
               if (child.isMesh) {
                 child.castShadow = true;
