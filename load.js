@@ -9,6 +9,7 @@ camera.lookAt(0, 1, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0xffffff);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -41,6 +42,11 @@ loader.load("base1.glb", (gltf) => {
   base.position.set(0, -1, 0);
   base.traverse((child) => {
     if (child.isMesh) {
+      child.material = new THREE.MeshStandardMaterial({
+        color: 0x000000,
+        metalness: 0.3,
+        roughness: 0.5,
+      });
       child.castShadow = true;
       child.receiveShadow = true;
     }
@@ -53,6 +59,11 @@ loader.load("base1.glb", (gltf) => {
     lowerArm = gltf.scene;
     lowerArm.traverse((child) => {
       if (child.isMesh) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0x000000,
+          metalness: 0.3,
+          roughness: 0.5,
+        });
         child.castShadow = true;
         child.receiveShadow = true;
       }
@@ -66,6 +77,11 @@ loader.load("base1.glb", (gltf) => {
       upperArm = gltf.scene;
       upperArm.traverse((child) => {
         if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0x000000,
+            metalness: 0.3,
+            roughness: 0.5,
+          });
           child.castShadow = true;
           child.receiveShadow = true;
         }
@@ -81,7 +97,7 @@ loader.load("base1.glb", (gltf) => {
         head.traverse((child) => {
           if (child.isMesh) {
             child.material = new THREE.MeshStandardMaterial({
-              color: 0xff69b4,
+              color: 0x000000,
               metalness: 0.3,
               roughness: 0.5,
             });
@@ -175,13 +191,14 @@ document.getElementById("headRotation").addEventListener("input", (e) => {
 
 
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({
-  // color: 0x333333,
-  transparent: true,
-  opacity: 0,
+  color: 0x333333,
+  // transparent: true,
+  // opacity: 0,
   side: THREE.DoubleSide
 }));
 floor.rotation.x = -Math.PI / 2;
-floor.position.y = -1;
+// floor.position.y = -1;
+floor.position.y = -6.55;
 floor.receiveShadow = true;
 scene.add(floor);
 
