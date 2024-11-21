@@ -33,7 +33,7 @@ function setupLighting() {
 
 setupLighting();
 
-const loader = new GLTFLoader().setPath("./model/");
+const loader = new GLTFLoader().setPath("./assets/");
 
 let base, lowerArm, upperArm, head, table;
 
@@ -122,22 +122,28 @@ loader.load("base1.glb", (gltf) => {
 
         head.add(spotLight);
 
-        // table
         loader.load("table.glb", (gltf) => {
           table = gltf.scene;
           table.position.set(0, -0.95, 0);
           table.scale.set(1.5, 1.5, 1.5);
-          table.traverse((child) => {
-            if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                color: 0x8b4513,
-                metalness: 0.3,
-                roughness: 0.5,
+          
+          const textureLoader = new THREE.TextureLoader();
+          textureLoader.load(
+            "./assets/texture.png", 
+            (texture) => {
+              table.traverse((child) => {
+                if (child.isMesh) {
+                  child.material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    metalness: 0.3,
+                    roughness: 0.5,
+                  });
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                }
               });
-              child.castShadow = true;
-              child.receiveShadow = true;
             }
-          });
+          );
           scene.add(table);
 
           // tiles
