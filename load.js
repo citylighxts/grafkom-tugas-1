@@ -39,19 +39,15 @@ let table, notebook;
 let base, lowerArm, upperArm, head;
 
 // table
-// First, add the texture loader
-const textureLoader = new THREE.TextureLoader();
-
-// table
 loader.load("table.glb", (gltf) => {
   table = gltf.scene;
   table.position.set(0, -0.95, 0);
   table.scale.set(1.5, 1.5, 1.5);
 
+  const textureLoader = new THREE.TextureLoader();
   const texture = textureLoader.load('./assets/texture.png');
   table.traverse((child) => {
     if (child.isMesh) {
-      // Apply the texture to the table only
       if (child.name.includes("Table")) {
         child.material = new THREE.MeshStandardMaterial({
           map: texture, // Apply texture here
@@ -90,19 +86,19 @@ loader.load("notebook.glb", (gltf) => {
 });
 
 // tiles
-// loader.load("tiles.glb", (gltf) => {
-//   const tiles = gltf.scene;
-//   // tiles.position.set(0, -6.55, 0);
-//   tiles.position.set(0, -9.35, 0);
-//   tiles.scale.set(10, 10, 10);
-//   tiles.traverse((child) => {
-//     if (child.isMesh) {
-//       child.castShadow = true;
-//       child.receiveShadow = true;
-//     }
-//   });
-//   scene.add(tiles);
-// });
+loader.load("tiles.glb", (gltf) => {
+  const tiles = gltf.scene;
+  // tiles.position.set(0, -6.55, 0);
+  tiles.position.set(0, -9.35, 0);
+  tiles.scale.set(10, 10, 10);
+  tiles.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
+  scene.add(tiles);
+});
 
 loader.load("base1.glb", (gltf) => {
   base = gltf.scene;
@@ -256,18 +252,6 @@ document.getElementById("notebookSlideZ").addEventListener("input", (e) => {
 document.getElementById("notebookRotate").addEventListener("input", (e) => {
   notebook.rotation.y = THREE.MathUtils.degToRad(parseFloat(e.target.value));
 });
-
-// const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshStandardMaterial({
-//   color: 0x333333,
-//   // transparent: true,
-//   // opacity: 0,
-//   side: THREE.DoubleSide
-// }));
-// floor.rotation.x = -Math.PI / 2;
-// // floor.position.y = -1;
-// floor.position.y = -6.55;
-// floor.receiveShadow = true;
-// scene.add(floor);
 
 function animate() {
   requestAnimationFrame(animate);
